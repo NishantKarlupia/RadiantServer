@@ -74,14 +74,23 @@ public class GameController {
         return this.gameService.getAllGames();
     }
     
-    // @GetMapping("/{gamename}")
-    // public Game getGame(@PathVariable("gamename") String gamename){
-    //     return this.gameService.getGame(gamename);
-    // }
+    @GetMapping("/game/{gamename}")
+    public Game getGame(@PathVariable("gamename") String gamename){
+        return this.gameService.getGame(gamename);
+    }
     
     @GetMapping("/{gameId}")
     public Game getGameById(@PathVariable("gameId") Long gameId){
         return this.gameService.getGameById(gameId);
+    }
+
+    @GetMapping("/random")
+    public List<Game> getRandomGames(){
+        return this.gameService.getRandomGames();
+    }
+    @GetMapping("/random/discount")
+    public List<Game>getRandomGamesWithDiscout(){
+        return this.gameService.getRandomGamesWithDiscount();
     }
     
     @PreAuthorize("hasRole('ADMIN')")

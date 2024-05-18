@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.http.HttpStatus;
@@ -43,7 +44,47 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public Game getGame(String gamename) {
-        return this.gameRepository.findByGamename(gamename);
+
+        Game game=this.gameRepository.findByGamename(gamename);
+        Long id=game.getGid();
+        String base64Image;
+        try {
+            base64Image = getImageBase64(id,"coverImage.jpg");
+        } catch (IOException e) {
+            base64Image="";
+        }
+        game.setCoverImage(base64Image);
+
+
+
+        List<String> gamePlayImagesBase64 = new ArrayList<>();
+        try {
+            Path gamePlayImagesDir = Paths.get("uploads", id.toString(), "gameplayImages");
+            Files.walk(gamePlayImagesDir)
+                 .filter(Files::isRegularFile)
+                 .forEach(imagePath -> {
+                     try {
+                         String imageBase64 = getImageBase64(id, "gamePlayImages/"+imagePath.getFileName().toString());
+                         gamePlayImagesBase64.add(imageBase64);
+                     } catch (IOException e) {
+                         // Handle error or continue without the game play image
+                         gamePlayImagesBase64.add(null);
+                     }
+                 });
+        } catch (IOException e) {
+            
+        }
+
+
+        game.setGamePlayImages(gamePlayImagesBase64);
+
+        return game;
+
+
+        // return this.gameRepository.findByGamename(gamename);
+
+
+
     }
 
     @SuppressWarnings("null")
@@ -130,6 +171,58 @@ public class GameServiceImpl implements GameService{
         Path imagePath = Paths.get("uploads", gameId.toString(), imageFileName);
         byte[] imageData = Files.readAllBytes(imagePath);
         return Base64.getEncoder().encodeToString(imageData);
+    }
+
+    @Override
+    public List<Game> getRandomGames() {
+
+        List<Game>games=this.gameRepository.findAll();
+        Collections.shuffle(games);
+        games=games.subList(0, Math.min(games.size(), 10));
+
+        for (Game game : games) {
+            try {
+                String coverImageBase64 = getImageBase64(game.getGid(), "coverImage.jpg");
+                game.setCoverImage(coverImageBase64);
+
+                // List<String> gamePlayImagesBase64 = new ArrayList<>();
+                // Path gamePlayImagesDir = Paths.get("uploads", game.getGid().toString(), "gameplayImages");
+                // Files.walk(gamePlayImagesDir)
+                //      .filter(Files::isRegularFile)
+                //      .forEach(imagePath -> {
+                //          try {
+                //              String imageBase64 = getImageBase64(game.getGid(), "gameplayImages/" + imagePath.getFileName());
+                //              gamePlayImagesBase64.add(imageBase64);
+                //          } catch (IOException e) {
+                //              // Handle error or continue without the game play image
+                //          }
+                //      });
+                // game.setGamePlayImages(gamePlayImagesBase64);
+            } catch (IOException e) {
+                // Handle error
+            }
+        }
+
+        return games;
+        
+    }
+
+    @Override
+    public List<Game> getRandomGamesWithDiscount() {
+        List<Game> gamesWithDiscount =this.gameRepository.findRandomGamesWithDiscount();
+        Collections.shuffle(gamesWithDiscount);
+        List<Game>games= gamesWithDiscount.subList(0, Math.min(gamesWithDiscount.size(), 10));
+
+        for (Game game : games) {
+            try {
+                String coverImageBase64 = getImageBase64(game.getGid(), "coverImage.jpg");
+                game.setCoverImage(coverImageBase64);
+            } catch (IOException e) {
+                // Handle error
+            }
+        }
+
+        return games;
     }
     
 }

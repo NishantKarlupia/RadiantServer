@@ -14,4 +14,6 @@ public interface GameService {
     public Game updateGame(Game game);
     public void deleteGame(Long id);
     public List<Game> getAllGames();
+    public List<Game>getRandomGames();
+    public List<Game>getRandomGamesWithDiscount();
 }

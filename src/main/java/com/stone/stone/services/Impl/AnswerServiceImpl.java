@@ -41,6 +41,22 @@ public class AnswerServiceImpl implements AnswerService{
         return answers;
     }
 
+    @Override
+    public void likeAnswer(Long ansId) {
+        Answer answer=this.answerRepository.findById(ansId).get();
+        answer.setLikes(answer.getLikes()+1);
+        this.answerRepository.save(answer);
+    }
+
+    @Override
+    public void dislikeAnswer(Long ansId) {
+
+        Answer answer=this.answerRepository.findById(ansId).get();
+        answer.setDislikes(answer.getDislikes()+1);
+        this.answerRepository.save(answer);
+        
+    }
+
    
     
 }

@@ -13,5 +13,7 @@ public interface AnswerService {
     public void deleteAnswer(Long ansId);
     // public Answer updateAnswer(Answer answer);
     public List<Answer>getAnswersOfQuestion(Long quesId);
+    public void likeAnswer(Long ansId);
+    public void dislikeAnswer(Long ansId);
 
 }
