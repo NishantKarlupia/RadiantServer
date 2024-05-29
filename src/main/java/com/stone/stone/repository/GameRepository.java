@@ -14,4 +14,12 @@ public interface GameRepository extends JpaRepository<Game,Long>{
     @Query(value = "SELECT * FROM games WHERE discount >= 10", nativeQuery = true)
     public List<Game>findRandomGamesWithDiscount();
 
+    
+    @Query(value = "SELECT * FROM games WHERE price < :price", nativeQuery = true)
+    public List<Game>findGamesLessThanPrice(Long price);
+
+    public List<Game>findByCategoriesContains(String category);
+
+
+
 }

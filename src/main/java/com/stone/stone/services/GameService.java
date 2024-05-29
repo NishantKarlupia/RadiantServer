@@ -16,4 +16,6 @@ public interface GameService {
     public List<Game> getAllGames();
     public List<Game>getRandomGames();
     public List<Game>getRandomGamesWithDiscount();
+    public List<Game>getGamesLessThanPrice(Long price);
+    public List<Game>getGamesOfCategory(String category);
 }

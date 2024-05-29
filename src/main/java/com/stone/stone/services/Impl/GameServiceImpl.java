@@ -224,5 +224,38 @@ public class GameServiceImpl implements GameService{
 
         return games;
     }
+
+    @Override
+    public List<Game> getGamesLessThanPrice(Long price) {
+
+        List<Game> games =this.gameRepository.findGamesLessThanPrice(price);
+        Collections.shuffle(games);
+        // List<Game>games= gamesWithDiscount.subList(0, Math.min(gamesWithDiscount.size(), 10));
+        for (Game game : games) {
+            try {
+                String coverImageBase64 = getImageBase64(game.getGid(), "coverImage.jpg");
+                game.setCoverImage(coverImageBase64);
+            } catch (IOException e) {
+                // Handle error
+            }
+        }
+        return games;
+        
+    }
+
+    @Override
+    public List<Game> getGamesOfCategory(String category) {
+        List<Game> games =this.gameRepository.findByCategoriesContains(category);
+        Collections.shuffle(games);
+        for (Game game : games) {
+            try {
+                String coverImageBase64 = getImageBase64(game.getGid(), "coverImage.jpg");
+                game.setCoverImage(coverImageBase64);
+            } catch (IOException e) {
+                // Handle error
+            }
+        }
+        return games;
+    }
     
 }

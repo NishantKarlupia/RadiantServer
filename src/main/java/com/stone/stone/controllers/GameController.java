@@ -92,12 +92,23 @@ public class GameController {
     public List<Game>getRandomGamesWithDiscout(){
         return this.gameService.getRandomGamesWithDiscount();
     }
+
+    @GetMapping("/random/price-less-than/{price}")
+    public List<Game>getGamesLessThanPrice(@PathVariable("price") Long price){
+        return this.gameService.getGamesLessThanPrice(price);
+    }
+
+    @GetMapping("/category/{category}")
+    public List<Game>getGamesOfCategory(@PathVariable("category")String category){
+        return this.gameService.getGamesOfCategory(category);
+    }
     
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{gameId}")
     public void deleteGame(@PathVariable("gameId") Long gameId){
         this.gameService.deleteGame(gameId);
     }
+
     
 }
 
